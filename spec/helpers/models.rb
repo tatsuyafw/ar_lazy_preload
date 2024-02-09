@@ -21,9 +21,7 @@ class Post < ActiveRecord::Base
   has_many :comments
   has_many :comments_with_preloaded_users, -> { includes(:user) }, class_name: "Comment"
   has_many :comment_threads, -> { threads }, class_name: "Comment"
-  has_many :comments_published_after_last_update, lambda { |post|
-    where("comments.created_at >= ?", post.updated_at)
-  }, class_name: "Comment"
+  has_many :comments_mentioning_user, ->(post) { where("comments.body LIKE ?", post.user.name) }, class_name: "Comment"
   has_many :votes, as: :voteable
 end
 
